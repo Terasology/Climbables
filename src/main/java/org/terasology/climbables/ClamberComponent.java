@@ -26,7 +26,7 @@ public class ClamberComponent implements Component<ClamberComponent> {
     }
 
     @Override
-    public void copy(ClamberComponent other) {
+    public void copyFrom(ClamberComponent other) {
         this.placingMode = other.placingMode;
         this.support = other.support;
         this.maxPlacementDistance = other.maxPlacementDistance;
