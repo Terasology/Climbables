@@ -8,15 +8,13 @@ import org.terasology.engine.audio.AudioManager;
 import org.terasology.engine.audio.events.PlaySoundEvent;
 import org.terasology.engine.entitySystem.entity.EntityRef;
 import org.terasology.engine.entitySystem.event.EventPriority;
-import org.terasology.engine.entitySystem.event.ReceiveEvent;
+import org.terasology.engine.entitySystem.event.Priority;
 import org.terasology.engine.entitySystem.systems.BaseComponentSystem;
 import org.terasology.engine.entitySystem.systems.RegisterMode;
 import org.terasology.engine.entitySystem.systems.RegisterSystem;
 import org.terasology.engine.logic.common.ActivateEvent;
 import org.terasology.engine.logic.health.DoDestroyEvent;
 import org.terasology.engine.logic.health.EngineDamageTypes;
-import org.terasology.module.inventory.systems.InventoryManager;
-import org.terasology.module.inventory.systems.InventoryUtils;
 import org.terasology.engine.logic.inventory.ItemComponent;
 import org.terasology.engine.math.Side;
 import org.terasology.engine.registry.In;
@@ -30,6 +28,9 @@ import org.terasology.engine.world.block.family.BlockFamily;
 import org.terasology.engine.world.block.family.BlockPlacementData;
 import org.terasology.engine.world.block.items.BlockItemComponent;
 import org.terasology.engine.world.block.items.OnBlockItemPlaced;
+import org.terasology.gestalt.entitysystem.event.ReceiveEvent;
+import org.terasology.module.inventory.systems.InventoryManager;
+import org.terasology.module.inventory.systems.InventoryUtils;
 
 @RegisterSystem(RegisterMode.AUTHORITY)
 public class ClimbablesPlacingSystem extends BaseComponentSystem {
@@ -45,7 +46,8 @@ public class ClimbablesPlacingSystem extends BaseComponentSystem {
     @In
     private InventoryManager inventoryManager;
 
-    @ReceiveEvent(priority = EventPriority.PRIORITY_HIGH)
+    @Priority(EventPriority.PRIORITY_HIGH)
+    @ReceiveEvent
     public void onDestroyed(DoDestroyEvent event, EntityRef entity, ClamberComponent clamberComponent, BlockComponent blockComponent) {
         Vector3i nextBlockPos = blockComponent.getPosition(new Vector3i());
         nextBlockPos.add(clamberComponent.getPlacingModeDirection());
@@ -57,7 +59,8 @@ public class ClimbablesPlacingSystem extends BaseComponentSystem {
         }
     }
 
-    @ReceiveEvent(components = {BlockItemComponent.class, ItemComponent.class}, priority = EventPriority.PRIORITY_HIGH)
+    @Priority(EventPriority.PRIORITY_HIGH)
+    @ReceiveEvent(components = {BlockItemComponent.class, ItemComponent.class})
     public void onPlaceBlock(ActivateEvent event, EntityRef item) {
 
         EntityRef targetEntity = event.getTarget();
